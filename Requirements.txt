@@ -1,0 +1,2 @@
+pip install neo4j falkordb python-arango pandas numpy matplotlib tabulate python-dotenv
+pip freeze > requirements.txt
