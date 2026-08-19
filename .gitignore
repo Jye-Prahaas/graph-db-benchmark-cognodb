@@ -1,0 +1,6 @@
+.env
+*.env
+*.mtx
+*.txt
+__pycache__/
+*.pyc
