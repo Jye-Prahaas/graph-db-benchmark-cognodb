@@ -93,6 +93,36 @@ python concurrency_benchmark.py # Run concurrency scalability test
 python generate_plots.py        # Generate latency and QPS charts
 
 
+
+## Execution Order
+
+Run the scripts in the following exact sequence:
+
+```bash
+# Step 1: Download & prepare the dataset
+python data.py
+
+# Step 2: Start local Docker containers
+docker run -d --name test-neo4j -p 7474:7474 -p 7687:7687 -e NEO4J_AUTH=neo4j/password123 neo4j:5-community
+docker run -d --name test-memgraph -p 7688:7687 memgraph/memgraph:latest
+docker run -d --name test-falkordb -p 6379:6379 falkordb/falkordb:latest
+docker run -d --name test-arangodb -p 8529:8529 -e ARANGO_NO_AUTH=1 arangodb/arangodb:latest
+
+# Step 3: Run core database comparison benchmark (Ingestion & Multi-Hop queries)
+python Compare.py
+
+# Step 4: Run CognoDB Cloud isolated benchmark
+python TestCogno.py
+
+# Step 5: Run concurrent mixed workload stress test (1, 10, 20, 40 clients)
+python "Section 5.2.py"
+
+# Step 6: Generate performance visualization charts
+python Result_graph.py
+
+
+
+
 #Run Containers in Docker
 docker run -d --name test-neo4j -p 7474:7474 -p 7687:7687 -e NEO4J_AUTH=neo4j/password123 neo4j:5-community
 docker run -d --name test-memgraph -p 7688:7687 memgraph/memgraph:latest
